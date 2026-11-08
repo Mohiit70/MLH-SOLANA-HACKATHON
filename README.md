@@ -8,7 +8,7 @@ Solana transactions are signed blind. Wallet popups show raw program calls and h
 
 ## The solution
 
-SolGuard sits between the dApp request and the signature. It decodes the transaction, simulates it on devnet, applies deterministic drainer rules, and uses Claude to explain the result in plain English with a clear verdict. **BLOCK means the Sign button is disabled.**
+SolGuard sits between the dApp request and the signature. It decodes the transaction, simulates it on devnet, applies deterministic drainer rules, and uses AI (Gemini gemini-3.5-flash by default, set by AI_MODEL) to explain the result in plain English with a clear verdict. **BLOCK means the Sign button is disabled.**
 
 Pitch line: **"Deterministic rules guard, AI explains."**
 
@@ -18,7 +18,7 @@ Pitch line: **"Deterministic rules guard, AI explains."**
 2. Decode every instruction (System Program, SPL Token, Token-2022, and more).
 3. Simulate on devnet for balance changes and logs.
 4. Run the rules engine for a risk score (0–100) and verdict (SAFE / CAUTION / BLOCK).
-5. Claude writes the plain-English explanation. The final verdict is the more severe of rules and AI — the AI can never downgrade a critical finding.
+5. The AI writes the plain-English explanation. The final verdict is the more severe of rules and AI — the AI can never downgrade a critical finding.
 
 ## Rules
 
@@ -38,13 +38,13 @@ Score: CRITICAL 90, HIGH 70, MEDIUM 40, LOW 15, INFO 0. Risk score = min(100, ma
 
 ## Tech stack
 
-Next.js 14 (App Router) + TypeScript + Tailwind CSS, @solana/web3.js v1, @solana/spl-token, Solana wallet adapter, @anthropic-ai/sdk (server-side only), zod. Devnet only — a visible DEVNET badge is shown in the UI.
+Next.js 14 (App Router) + TypeScript + Tailwind CSS, @solana/web3.js v1, @solana/spl-token, Solana wallet adapter, plain fetch to the configured AI provider (server-side only), zod. Devnet only — a visible DEVNET badge is shown in the UI.
 
 ## Run locally
 
 ```bash
 npm install
-cp .env.example .env.local   # add ANTHROPIC_API_KEY (optional — the app falls back to a rule-based explanation without it)
+cp .env.example .env.local   # add AI_API_KEY (optional — the app falls back to a rule-based explanation without it)
 npm run dev
 ```
 
@@ -52,7 +52,7 @@ Open http://localhost:3000, connect a wallet (devnet) or click a demo: Safe tran
 
 ## Environment variables
 
-See `.env.example`. `NEXT_PUBLIC_SOLANA_RPC` / `SOLANA_RPC_SERVER` default to the public devnet RPC. `ANTHROPIC_MODEL` defaults to `claude-sonnet-5-5`.
+See `.env.example`. `NEXT_PUBLIC_SOLANA_RPC` / `SOLANA_RPC_SERVER` default to the public devnet RPC. `AI_PROVIDER` defaults to `gemini`, `AI_MODEL` to `gemini-3.5-flash`.
 
 ## Architecture
 
@@ -64,4 +64,16 @@ Browser extension / wallet-adapter wrapper, mainnet support, more rules (Jupiter
 
 ## Screenshots
 
-_TODO: add screenshots of the SAFE, CAUTION and BLOCK verdicts after deploying._
+Captured from the running app on devnet (no AI key, so the rule-based explanation is shown).
+
+### Safe transfer — SAFE, risk score 0/100
+
+![Safe transfer verdict: SAFE, risk score 0 out of 100](docs/screenshots/safe.png)
+
+### Unlimited approve — BLOCK, risk score 70/100
+
+![Unlimited approve verdict: BLOCK, risk score 70 out of 100, HIGH finding for unlimited token approval](docs/screenshots/approve-block.png)
+
+### Drainer bundle — BLOCK, risk score 95/100
+
+![Drainer bundle verdict: BLOCK, risk score 95 out of 100, CRITICAL finding for token account owner change](docs/screenshots/drainer-block.png)
