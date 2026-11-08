@@ -48,8 +48,9 @@ export async function explainWithAi(
       return { explanation: fallback, aiUsed: false };
     }
     const cleaned = textBlock.text
-      .replace(/^```(?:json)?/i, "")
-      .replace(/```$/i, "")
+      .trim()
+      .replace(/^```(?:json)?\s*/i, "")
+      .replace(/```\s*$/i, "")
       .trim();
     const parsed = AiSchema.safeParse(JSON.parse(cleaned));
     if (!parsed.success) return { explanation: fallback, aiUsed: false };
