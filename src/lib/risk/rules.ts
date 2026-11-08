@@ -23,9 +23,11 @@ export function runRules(
 
   for (const ix of instructions) {
     // TOKEN_SET_AUTHORITY_OWNER — CRITICAL
+    // A revoke (option flag 0, newAuthority "") is a safety action, not a drainer move.
     if (
       ix.kind === "SetAuthority" &&
-      (ix.details.authorityType === 2 || ix.details.authorityType === 3)
+      (ix.details.authorityType === 2 || ix.details.authorityType === 3) &&
+      ix.details.newAuthority
     ) {
       findings.push(
         f(
