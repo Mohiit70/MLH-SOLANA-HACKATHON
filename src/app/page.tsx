@@ -52,9 +52,22 @@ export default function Home() {
   const handleDemo = useCallback(
     async (kind: DemoKind) => {
       setError("");
-      // Demo payer: connected wallet if present, else a random keypair
-      // (demos are unsigned and never sent, so any payer works).
-      const payer: PublicKey = publicKey ?? Keypair.generate().publicKey;
+      // Demo payer: connected wallet if present, else NEXT_PUBLIC_DEMO_PAYER
+      // (a funded devnet PUBLIC address from env — no private key involved,
+      // demos are unsigned and never sent), else a random keypair.
+      // A funded payer makes simulation succeed, so the 95% sweep is visible.
+      const demoPayer = (() => {
+        const env = process.env.NEXT_PUBLIC_DEMO_PAYER;
+        if (env) {
+          try {
+            return new PublicKey(env);
+          } catch {
+            return Keypair.generate().publicKey;
+          }
+        }
+        return Keypair.generate().publicKey;
+      })();
+      const payer: PublicKey = publicKey ?? demoPayer;
       try {
         const b64 = await buildDemoTx(kind, connection, payer);
         setTxBase64(b64);
