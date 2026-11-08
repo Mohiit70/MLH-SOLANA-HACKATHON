@@ -26,7 +26,7 @@ export default function InstructionList({
           {instructions.map((ix) => (
             <li key={ix.index} className="rounded-lg bg-zinc-950 p-3">
               <p className="font-semibold">
-                #{ix.index} — {ix.programName} · {ix.kind}
+                #{ix.index + 1} — {ix.programName} · {ix.kind}
               </p>
               <p className="mt-1 text-sm text-zinc-400">{ix.summary}</p>
               <p className="mt-1 break-all font-mono text-xs text-zinc-500">

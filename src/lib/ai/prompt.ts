@@ -1,4 +1,4 @@
-// Claude prompts — see CLAUDE.md section 5.5.
+// AI prompts (provider-agnostic) — see CLAUDE.md section 5.5.
 import type { Analysis, DecodedInstruction, Finding, SimulationSummary } from "../types";
 
 export const SYSTEM_PROMPT =
@@ -62,10 +62,13 @@ export function fallbackExplanation(
 ): AiExplanation {
   const critical = findings.filter((f) => f.severity === "CRITICAL");
   const high = findings.filter((f) => f.severity === "HIGH");
-  const issues =
-    findings.length === 0
-      ? "No risky patterns were found."
-      : `Issues: ${findings.map((f) => f.title).join("; ")}.`;
+  // If nothing above INFO was found, say so plainly — a lone INFO finding
+  // such as a failed simulation is not a danger.
+  const allInfo =
+    findings.length === 0 || findings.every((f) => f.severity === "INFO");
+  const issues = allInfo
+    ? "No dangerous patterns found."
+    : `Issues: ${findings.map((f) => f.title).join("; ")}.`;
   const summary = `This transaction contains ${instructions.length} instruction(s). ${issues}`;
   const whatCouldGoWrong =
     critical.length > 0
