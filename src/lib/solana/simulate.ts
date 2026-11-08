@@ -33,15 +33,30 @@ export async function simulateTransaction(
     } catch {
       solBefore = undefined;
     }
-    const res = await withTimeout(
-      connection.simulateTransaction(vtx, {
-        sigVerify: false,
-        replaceRecentBlockhash: true,
-        commitment: "confirmed",
-        accounts: { encoding: "base64", addresses: [feePayer] },
-      }),
-      10000
-    );
+    // Public devnet RPC rate-limits (HTTP 429): retry once after 500 ms.
+    let res: Awaited<
+      ReturnType<typeof connection.simulateTransaction>
+    > | null = null;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        res = await withTimeout(
+          connection.simulateTransaction(vtx, {
+            sigVerify: false,
+            replaceRecentBlockhash: true,
+            commitment: "confirmed",
+            accounts: { encoding: "base64", addresses: [feePayer] },
+          }),
+          10000
+        );
+        break;
+      } catch (err) {
+        const is429 =
+          err instanceof Error && err.message.includes("429");
+        if (!is429 || attempt === 1) throw err;
+        await new Promise((r) => setTimeout(r, 500));
+      }
+    }
+    if (!res) throw new Error("Simulation failed");
     const logs = res.value.logs ?? [];
     let solAfter = solBefore;
     const acct = res.value.accounts?.[0];
