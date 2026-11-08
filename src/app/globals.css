@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #09090b;
+  color: #f4f4f5;
+}
+
+@keyframes gauge-fill {
+  from {
+    width: 0;
+  }
+}
+.gauge-fill {
+  animation: gauge-fill 0.8s ease-out;
+}
