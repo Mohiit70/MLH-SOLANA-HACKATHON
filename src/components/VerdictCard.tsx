@@ -18,9 +18,9 @@ export default function VerdictCard({ analysis }: { analysis: Analysis }) {
           {analysis.verdict}
         </span>
         <span className="text-xs font-semibold text-zinc-400">
-          {analysis.aiUsed
-            ? "Explained by Claude"
-            : "Rule-based explanation (no AI key)"}
+          {analysis.aiUsed && analysis.aiModel
+            ? `AI read (${analysis.aiModel})`
+            : "Plain rules read"}
         </span>
       </div>
       <div className="mt-4 text-zinc-100">

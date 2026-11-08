@@ -12,13 +12,13 @@ Deterministic rules guard, AI explains. Know what a Solana transaction will do b
 
 Solana transactions are signed blind. Wallet popups show raw program calls and hex, so normal users cannot tell a harmless transfer from a wallet drainer that sets a new token-account owner, grants an unlimited token approval, or sweeps SOL to an attacker. One wrong signature is irreversible.
 
-SolGuard sits between the dApp request and the signature. Paste a transaction, connect a wallet, or click a demo: SolGuard decodes every instruction, simulates the transaction on devnet, runs a deterministic rules engine for known drainer patterns, and asks Claude to explain the result in plain English — a risk score (0–100), a verdict (SAFE / CAUTION / BLOCK), and a findings list. BLOCK disables the Sign button.
+SolGuard sits between the dApp request and the signature. Paste a transaction, connect a wallet, or click a demo: SolGuard decodes every instruction, simulates the transaction on devnet, runs a deterministic rules engine for known drainer patterns, and asks the AI to explain the result in plain English — a risk score (0–100), a verdict (SAFE / CAUTION / BLOCK), and a findings list. BLOCK disables the Sign button.
 
-The key design point: deterministic rules guard, AI explains. The final verdict is the more severe of the rules verdict and the AI verdict, so the AI can never downgrade a critical finding. If the Claude key is missing, a rule-based explanation is used instead, so the demo never crashes.
+The key design point: deterministic rules guard, AI explains. The final verdict is the more severe of the rules verdict and the AI verdict, so the AI can never downgrade a critical finding. If the AI key is missing, a rule-based explanation is used instead, so the demo never crashes.
 
 ## Built with
 
-Next.js 14, TypeScript, Tailwind CSS, @solana/web3.js, @solana/spl-token, Solana wallet adapter, Anthropic Claude, zod, Vercel.
+Next.js 14, TypeScript, Tailwind CSS, @solana/web3.js, @solana/spl-token, Solana wallet adapter,  AI (Gemini gemini-3.5-flash by default), zod, Vercel.
 
 ## Challenges to enter
 

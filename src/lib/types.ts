@@ -40,6 +40,7 @@ export interface Analysis {
   instructions: DecodedInstruction[];
   simulation: SimulationSummary;
   aiUsed: boolean;
+  aiModel: string | null; // model that wrote the explanation, null on fallback
 }
 
 export const VERDICT_RANK: Record<Verdict, number> = {

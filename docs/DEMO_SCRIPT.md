@@ -10,11 +10,11 @@ Click **Safe transfer**. SolGuard decodes it, simulates it on devnet, and shows 
 
 ## 0:35–1:05 — Drainer transaction → red
 
-Click **Drainer bundle**. SolGuard flags it red: BLOCK, risk score 95. Findings: token account owner is being changed (CRITICAL), call to an unknown program, and almost all SOL leaving the wallet. Claude explains it in plain English. The Sign button reads "Blocked by SolGuard" and is disabled.
+Click **Drainer bundle**. SolGuard flags it red: BLOCK, risk score 95. Findings: token account owner is being changed (CRITICAL), call to an unknown program, and almost all SOL leaving the wallet. The AI explains it in plain English. The Sign button reads "Blocked by SolGuard" and is disabled.
 
 ## 1:05–1:20 — How it works and roadmap
 
-"Deterministic rules guard, AI explains. The rules catch the drainer patterns, Claude explains them in plain English, and the AI can never downgrade a critical finding. Next: a browser extension, mainnet, and more rules."
+"Deterministic rules guard, AI explains. The rules catch the drainer patterns, the AI explains them in plain English, and the AI can never downgrade a critical finding. Next: a browser extension, mainnet, and more rules."
 
 ## Notes for the recording
 

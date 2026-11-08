@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     );
     const findings = runRules(decoded.instructions, simulation);
     const { riskScore, verdict: rulesVerdict } = scoreFindings(findings);
-    const { explanation, aiUsed } = await explainWithAi(
+    const { explanation, aiUsed, aiModel } = await explainWithAi(
       decoded.instructions,
       simulation,
       findings
@@ -70,6 +70,7 @@ export async function POST(req: Request) {
       instructions: decoded.instructions,
       simulation,
       aiUsed,
+      aiModel,
     };
     return NextResponse.json(analysis);
   } catch {
