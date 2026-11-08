@@ -1,5 +1,5 @@
 "use client";
-// Collapsible decoded instructions.
+// Collapsed disclosure for judges who want the raw decoded instructions.
 import { useState } from "react";
 import type { DecodedInstruction } from "@/lib/types";
 
@@ -10,26 +10,24 @@ export default function InstructionList({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+    <section className="border-t border-hairline pt-6">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between text-left"
+        aria-expanded={open}
+        className="text-[15px] font-semibold underline decoration-hairline underline-offset-4"
       >
-        <h2 className="text-lg font-bold">
-          Decoded instructions ({instructions.length})
-        </h2>
-        <span className="text-zinc-400">{open ? "Hide" : "Show"}</span>
+        {open ? "Hide raw decoded instructions" : "Show raw decoded instructions"}
       </button>
       {open && (
-        <ol className="mt-3 space-y-3">
+        <ol className="mt-4 space-y-4">
           {instructions.map((ix) => (
-            <li key={ix.index} className="rounded-lg bg-zinc-950 p-3">
+            <li key={ix.index} className="border-t border-hairline pt-4 first:border-t-0 first:pt-0">
               <p className="font-semibold">
-                #{ix.index + 1} — {ix.programName} · {ix.kind}
+                {ix.index + 1}. {ix.programName} · {ix.kind}
               </p>
-              <p className="mt-1 text-sm text-zinc-400">{ix.summary}</p>
-              <p className="mt-1 break-all font-mono text-xs text-zinc-500">
+              <p className="mt-1 text-sm text-muted">{ix.summary}</p>
+              <p className="mt-1 break-all font-mono text-xs text-muted">
                 {ix.programId}
               </p>
             </li>

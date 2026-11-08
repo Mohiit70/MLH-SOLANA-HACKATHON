@@ -1,6 +1,6 @@
 "use client";
-// Sign & Send on devnet. Disabled on BLOCK. CAUTION asks for confirmation.
-// The transaction is only sent when the user presses this button.
+// Sign action inside the verdict band. Disabled on BLOCK. CAUTION asks for
+// confirmation. The transaction is only sent when the user presses this button.
 import { useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { VersionedTransaction } from "@solana/web3.js";
@@ -9,9 +9,11 @@ import type { Analysis } from "@/lib/types";
 export default function SendButton({
   analysis,
   txBase64,
+  tone,
 }: {
   analysis: Analysis | null;
   txBase64: string;
+  tone: "light" | "dark";
 }) {
   const { connection } = useConnection();
   const { publicKey, sendTransaction, connected } = useWallet();
@@ -48,31 +50,38 @@ export default function SendButton({
     }
   }
 
+  const pill =
+    tone === "dark"
+      ? "border-ink text-ink"
+      : "border-paper text-paper";
+
   return (
-    <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+    <div>
       <button
         type="button"
         onClick={handleSend}
         disabled={blocked || sending || !connected}
-        className="w-full rounded-lg bg-emerald-500 px-4 py-3 font-bold text-zinc-950 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
+        className={
+          blocked
+            ? `cursor-not-allowed rounded-full border px-5 py-3 font-semibold opacity-60 ${pill}`
+            : analysis.verdict === "CAUTION"
+              ? `rounded-full border-2 bg-transparent px-5 py-3 font-semibold ${pill}`
+              : "rounded-full bg-ink px-5 py-3 font-semibold text-paper"
+        }
       >
         {blocked
-          ? "Blocked by SolGuard"
+          ? "Signing is turned off for this transaction"
           : sending
             ? "Sending…"
             : !connected
-              ? "Connect a wallet to sign & send"
-              : "Sign & Send on devnet"}
+              ? "Connect a wallet to sign"
+              : analysis.verdict === "CAUTION"
+                ? "I've read this and want to sign"
+                : "Sign and send"}
       </button>
-      {blocked && (
-        <p className="mt-2 text-sm text-red-400">
-          SolGuard blocked this transaction. The Sign button stays disabled
-          for BLOCK verdicts.
-        </p>
-      )}
       {status && (
-        <p className="mt-2 break-all text-sm text-zinc-300">{status}</p>
+        <p className="mt-3 break-all text-sm opacity-90">{status}</p>
       )}
-    </section>
+    </div>
   );
 }

@@ -42,13 +42,25 @@ Next.js 14 (App Router) + TypeScript + Tailwind CSS, @solana/web3.js v1, @solana
 
 ## Run locally
 
+What you need: Node.js 18 or newer (check with `node -v`), npm (comes with
+Node), and a free Gemini API key from Google AI Studio
+(aistudio.google.com → Get API key). No wallet and no SOL are needed to try
+the demos — they run on devnet with a funded demo payer.
+
 ```bash
+git clone https://github.com/Mohiit70/MLH-SOLANA-HACKATHON.git
+cd MLH-SOLANA-HACKATHON
 npm install
-cp .env.example .env.local   # add AI_API_KEY (optional — the app falls back to a rule-based explanation without it)
+cp .env.example .env.local   # open .env.local, paste your key after AI_API_KEY=
 npm run dev
 ```
 
-Open http://localhost:3000, connect a wallet (devnet) or click a demo: Safe transfer, Unlimited approve, Drainer bundle.
+Open http://localhost:3000, connect a wallet (devnet) or click a demo:
+Normal transfer, Unlimited approval, Wallet drainer. Without a key the app
+still works — it falls back to a rule-based explanation and labels it
+"Plain rules read". For a production build instead: `npm run build` then
+`npm run start` (port 3000). To put it on the internet, import the repo in
+Vercel and add the same variables from `.env.example` in the dashboard.
 
 ## Environment variables
 

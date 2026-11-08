@@ -2,16 +2,77 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: #09090b;
-  color: #f4f4f5;
+:root {
+  --chalk: #eef1ef;
+  --paper: #ffffff;
+  --ink: #0f1a2b;
+  --muted: #5b6676;
+  --hairline: rgba(15, 26, 43, 0.14);
+  --signal: #d8352a;
+  --amber: #e8a317;
+  --lagoon: #0f6b5c;
 }
 
-@keyframes gauge-fill {
+body {
+  background-color: var(--chalk);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.ink-surface :focus-visible,
+.verdict-band :focus-visible {
+  outline-color: var(--paper);
+}
+
+/* Wallet adapter button as an ink pill. */
+.wallet-btn {
+  background-color: var(--ink) !important;
+  color: var(--paper) !important;
+  border-radius: 9999px !important;
+  font-family: var(--font-body), system-ui, sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  height: 40px !important;
+  padding: 0 18px !important;
+  box-shadow: none !important;
+}
+
+/* Sequential reveal of plain-English rows, then the verdict band wipes in. */
+@keyframes row-in {
   from {
-    width: 0;
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
-.gauge-fill {
-  animation: gauge-fill 0.8s ease-out;
+
+@keyframes band-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.row-in {
+  animation: row-in 0.3s ease-out both;
+}
+
+.band-wipe {
+  animation: band-wipe 0.4s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row-in,
+  .band-wipe {
+    animation: none !important;
+  }
 }

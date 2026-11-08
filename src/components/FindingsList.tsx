@@ -1,44 +1,56 @@
-// Findings list with severity chips.
+// Why it was flagged: plain rows, no cards. Severity is a colored dot plus
+// a sentence-case word, not a caps chip. Simulation failure is not a finding.
 import type { Finding, Severity } from "@/lib/types";
 
-const CHIP: Record<Severity, string> = {
-  CRITICAL: "bg-red-500 text-white",
-  HIGH: "bg-orange-500 text-white",
-  MEDIUM: "bg-amber-400 text-zinc-950",
-  LOW: "bg-sky-500 text-white",
-  INFO: "bg-zinc-600 text-white",
+const DOT: Record<Severity, string> = {
+  CRITICAL: "bg-signal",
+  HIGH: "bg-signal",
+  MEDIUM: "bg-amber",
+  LOW: "bg-muted",
+  INFO: "bg-muted",
 };
 
-export default function FindingsList({
-  findings,
-}: {
-  findings: Finding[];
-}) {
+const WORD: Record<Severity, string> = {
+  CRITICAL: "Critical",
+  HIGH: "High",
+  MEDIUM: "Medium",
+  LOW: "Low",
+  INFO: "Info",
+};
+
+export default function FindingsList({ findings }: { findings: Finding[] }) {
+  const shown = findings.filter((f) => f.id !== "SIM_FAILED");
   return (
-    <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-      <h2 className="text-lg font-bold">Findings ({findings.length})</h2>
-      {findings.length === 0 ? (
-        <p className="mt-2 text-sm text-zinc-400">
-          No risky patterns found in this transaction.
+    <section>
+      <h2 className="text-[15px] font-semibold">Why it was flagged</h2>
+      {shown.length === 0 ? (
+        <p className="mt-4 text-[17px] leading-[1.55] text-muted">
+          No dangerous patterns found.
         </p>
       ) : (
-        <ul className="mt-3 space-y-3">
-          {findings.map((f) => (
-            <li key={`${f.id}-${f.instructionIndex ?? "x"}`} className="rounded-lg bg-zinc-950 p-3">
-              <div className="flex flex-wrap items-center gap-2">
+        <ul className="mt-4 space-y-4">
+          {shown.map((f) => (
+            <li
+              key={`${f.id}-${f.instructionIndex ?? "x"}`}
+              className="border-t border-hairline pt-4 first:border-t-0 first:pt-0"
+            >
+              <p className="flex flex-wrap items-center gap-2">
                 <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-bold ${CHIP[f.severity]}`}
-                >
-                  {f.severity}
-                </span>
+                  aria-hidden
+                  className={`inline-block h-2.5 w-2.5 rounded-full ${DOT[f.severity]}`}
+                />
+                <span className="text-sm text-muted">{WORD[f.severity]}</span>
                 <span className="font-semibold">{f.title}</span>
-              </div>
-              <p className="mt-1 text-sm text-zinc-400">{f.explanation}</p>
-              {f.instructionIndex !== undefined && (
-                <p className="mt-1 text-xs text-zinc-500">
-                  Instruction #{f.instructionIndex}
-                </p>
-              )}
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-muted">
+                {f.explanation}
+              </p>
+              <p className="mt-1 text-sm text-muted">
+                {f.instructionIndex !== undefined
+                  ? `Step ${f.instructionIndex + 1} · `
+                  : ""}
+                Found by rules
+              </p>
             </li>
           ))}
         </ul>
