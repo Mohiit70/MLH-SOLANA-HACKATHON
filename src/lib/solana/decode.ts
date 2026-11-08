@@ -111,8 +111,10 @@ function decodeToken(
     data.length >= offset + 8 ? Number(readU64(data, offset)) : 0;
   if (disc === 3 || disc === 12) {
     // Transfer / TransferChecked
+    // Transfer: [source, destination, owner] -> dest is keys[1].
+    // TransferChecked: [source, mint, destination, owner] -> dest is keys[2].
     const amt = amount(1);
-    const dest = ix.keys[1]?.pubkey.toBase58() ?? "";
+    const dest = (disc === 12 ? ix.keys[2] : ix.keys[1])?.pubkey.toBase58() ?? "";
     return {
       ...base,
       kind: "Transfer",
@@ -122,9 +124,14 @@ function decodeToken(
   }
   if (disc === 4 || disc === 13) {
     // Approve / ApproveChecked
-    const amt = amount(1);
-    const delegate = ix.keys[1]?.pubkey.toBase58() ?? "";
-    const unlimited = BigInt(amt) >= BigInt("9223372036854775808");
+    // Approve: [source, delegate, owner] -> delegate is keys[1].
+    // ApproveChecked: [source, mint, delegate, owner] -> delegate is keys[2].
+    // Compare the raw u64 before Number() loses precision at 2^64-1.
+    const amtBig = data.length >= 9 ? readU64(data, 1) : BigInt(0);
+    const amt = Number(amtBig);
+    const delegate =
+      (disc === 13 ? ix.keys[2] : ix.keys[1])?.pubkey.toBase58() ?? "";
+    const unlimited = amtBig >= BigInt("9223372036854775808"); // 2^63
     return {
       ...base,
       kind: "Approve",

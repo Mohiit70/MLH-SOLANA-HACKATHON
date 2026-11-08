@@ -1,6 +1,12 @@
 "use client";
 // Header: logo, DEVNET badge, wallet button.
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+// Wallet UI breaks SSR, so the button loads client-only (solana-expert M0).
+import dynamic from "next/dynamic";
+
+const WalletMultiButton = dynamic(
+  async () => (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
+  { ssr: false }
+);
 
 export default function Header() {
   return (

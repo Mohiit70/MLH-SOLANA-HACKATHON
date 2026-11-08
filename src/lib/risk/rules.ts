@@ -144,8 +144,14 @@ export function runRules(
   // MULTI_TRANSFER_SAME_DEST — MEDIUM
   const destCounts = new Map<string, number>();
   for (const ix of instructions) {
-    if (ix.kind === "Transfer" && ix.accounts[1]) {
-      destCounts.set(ix.accounts[1], (destCounts.get(ix.accounts[1]) ?? 0) + 1);
+    if (ix.kind === "Transfer") {
+      // TransferChecked is [source, mint, destination, owner] — dest is accounts[2].
+      // Plain Transfer is [source, destination, owner] — dest is accounts[1].
+      const isToken =
+        ix.programName === "SPL Token" || ix.programName === "Token-2022";
+      const dest =
+        isToken && ix.accounts.length >= 4 ? ix.accounts[2] : ix.accounts[1];
+      if (dest) destCounts.set(dest, (destCounts.get(dest) ?? 0) + 1);
     }
   }
   destCounts.forEach((count, dest) => {

@@ -12,6 +12,7 @@ import { maxVerdict, type Analysis } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 
 const BodySchema = z.object({
   txBase64: z.string().min(1),

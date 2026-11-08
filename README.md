@@ -52,7 +52,7 @@ Open http://localhost:3000, connect a wallet (devnet) or click a demo: Safe tran
 
 ## Environment variables
 
-See `.env.example`. `NEXT_PUBLIC_SOLANA_RPC` / `SOLANA_RPC_SERVER` default to the public devnet RPC. `ANTHROPIC_MODEL` defaults to `claude-sonnet-4-5`.
+See `.env.example`. `NEXT_PUBLIC_SOLANA_RPC` / `SOLANA_RPC_SERVER` default to the public devnet RPC. `ANTHROPIC_MODEL` defaults to `claude-sonnet-5-5`.
 
 ## Architecture
 
