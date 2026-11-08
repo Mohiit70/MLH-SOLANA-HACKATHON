@@ -226,20 +226,37 @@ export async function decodeTransaction(
   const message = vtx.message;
   const feePayer = message.staticAccountKeys[0]?.toBase58() ?? "";
   let instructions: TransactionInstruction[];
-  // v0 with address lookup tables: resolve them, fall back if that fails.
+  // v0 with address lookup tables: resolve them, or fail loudly.
+  // A silent fallback would decode wrong accounts, so ALT txs are
+  // rejected with a clear message instead of being mis-analyzed.
   const lookups = message.addressTableLookups ?? [];
-  if (lookups.length > 0 && connection) {
+  if (lookups.length > 0) {
+    if (!connection) {
+      throw new Error("Address lookup table transactions are not supported");
+    }
     try {
       const altAccounts: AddressLookupTableAccount[] = [];
       for (const lookup of lookups) {
         const res = await connection.getAddressLookupTable(lookup.accountKey);
-        if (res.value) altAccounts.push(res.value);
+        if (!res.value) {
+          throw new Error(
+            "Address lookup table transactions are not supported"
+          );
+        }
+        altAccounts.push(res.value);
       }
       instructions = TransactionMessage.decompile(message, {
         addressLookupTableAccounts: altAccounts,
       }).instructions;
-    } catch {
-      instructions = fallbackInstructions(vtx);
+    } catch (err) {
+      if (
+        err instanceof Error &&
+        err.message ===
+          "Address lookup table transactions are not supported"
+      ) {
+        throw err;
+      }
+      throw new Error("Address lookup table transactions are not supported");
     }
   } else {
     instructions = fallbackInstructions(vtx);
