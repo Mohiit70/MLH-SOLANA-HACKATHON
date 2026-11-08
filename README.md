@@ -80,12 +80,12 @@ Captured from the running app on devnet (no AI key, so the rule-based explanatio
 
 ### Safe transfer — SAFE, risk score 0/100
 
-![Safe transfer verdict: SAFE, risk score 0 out of 100](docs/screenshots/safe.png)
+![Safe transfer verdict: SAFE, risk score 0 out of 100](docs/screenshots/safe.png?raw=true)
 
 ### Unlimited approve — BLOCK, risk score 70/100
 
-![Unlimited approve verdict: BLOCK, risk score 70 out of 100, HIGH finding for unlimited token approval](docs/screenshots/approve-block.png)
+![Unlimited approve verdict: BLOCK, risk score 70 out of 100, HIGH finding for unlimited token approval](docs/screenshots/approve-block.png?raw=true)
 
 ### Drainer bundle — BLOCK, risk score 95/100
 
-![Drainer bundle verdict: BLOCK, risk score 95 out of 100, CRITICAL finding for token account owner change](docs/screenshots/drainer-block.png)
+![Drainer bundle verdict: BLOCK, risk score 95 out of 100, CRITICAL finding for token account owner change](docs/screenshots/drainer-block.png?raw=true)
